@@ -1,0 +1,63 @@
+# 用户管理测试数据
+test_users:
+  admin_user:
+    username: "admin_test"
+    email: "admin_test@example.com"
+    password: "Admin@123456"
+    first_name: "Admin"
+    last_name: "Test"
+    role: "administrator"
+    status: "active"
+  
+  regular_user:
+    username: "regular_test"
+    email: "regular_test@example.com"
+    password: "User@123456"
+    first_name: "Regular"
+    last_name: "User"
+    role: "user"
+    status: "active"
+  
+  editor_user:
+    username: "editor_test"
+    email: "editor_test@example.com"
+    password: "Editor@123456"
+    first_name: "Editor"
+    last_name: "Test"
+    role: "editor"
+    status: "active"
+
+# 批量测试数据
+bulk_users:
+  count: 10
+  prefix: "bulk_user_"
+
+# 搜索测试数据
+search_test_cases:
+  - query: "admin"
+    expected_min_count: 1
+  - query: "test"
+    expected_min_count: 3
+  - query: "nonexistent"
+    expected_max_count: 0
+
+# 验证测试数据
+validation_test_cases:
+  invalid_emails:
+    - "invalid-email"
+    - "user@.com"
+    - "@domain.com"
+    - "user@domain"
+  
+  invalid_passwords:
+    - "short"
+    - "12345678"
+    - "password"
+    - "abcdefgh"
+  
+  invalid_usernames:
+    - ""
+    - "a"
+    - "user name"
+    - "user@name"
+    - "verylongusernameexceedlimit"

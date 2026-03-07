@@ -1,0 +1,62 @@
+# 虚拟环境（核心，避免提交本地依赖环境）
+venv/
+env/
+.venv/
+ENV/
+
+# Python编译文件
+__pycache__/
+*.py[cod]
+*$py.class
+
+
+# 依赖相关（避免提交依赖安装缓存）
+*.egg-info/
+.installed.cfg
+dist/
+build/
+wheelhouse/
+
+
+# 编辑器/IDE配置（个人开发工具配置，不统一提交）
+.idea/
+.vscode/
+*.swp
+*.swo
+.project
+.classpath
+.settings/
+
+# 浏览器驱动相关（Playwright/Selenium自动下载的驱动，无需提交）
+#.driver/
+#chromedriver*
+#geckodriver*
+#msedgedriver*
+
+# 框架运行临时文件
+.tmp/
+temp/
+
+
+# 日志目录（自动生成，无需提交）
+log/
+
+# 失败截图目录（自动生成，无需提交）
+screenshot/
+
+# 测试报告目录（自动生成，无需提交）
+report/
+
+# Playwright 缓存目录（自动生成，无需提交）
+playwright_cache/
+
+# Allure 原始报告数据
+report/allure_raw/
+
+# 临时测试文件
+*.tmp
+*.temp
+.cache/
+.pytest_cache/
+.coverage
+htmlcov/

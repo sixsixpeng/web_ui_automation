@@ -1,0 +1,64 @@
+# 登录测试数据
+test_cases:
+  valid_login:
+    username: "test_user"
+    password: "test_password"
+    expected_result: "success"
+    description: "有效用户名和密码登录"
+  
+  invalid_username:
+    username: "wrong_user"
+    password: "test_password"
+    expected_result: "failure"
+    error_message: "用户名或密码错误"
+    description: "无效用户名登录"
+  
+  invalid_password:
+    username: "test_user"
+    password: "wrong_password"
+    expected_result: "failure"
+    error_message: "用户名或密码错误"
+    description: "无效密码登录"
+  
+  empty_username:
+    username: ""
+    password: "test_password"
+    expected_result: "failure"
+    error_message: "用户名不能为空"
+    description: "用户名为空登录"
+  
+  empty_password:
+    username: "test_user"
+    password: ""
+    expected_result: "failure"
+    error_message: "密码不能为空"
+    description: "密码为空登录"
+  
+  special_chars_username:
+    username: "test@user#123"
+    password: "test_password"
+    expected_result: "success"
+    description: "特殊字符用户名登录"
+  
+  long_password:
+    username: "test_user"
+    password: "very_long_password_1234567890_abcdefghijklmnopqrstuvwxyz"
+    expected_result: "success"
+    description: "长密码登录"
+
+# 测试用户账户
+test_users:
+  admin:
+    username: "admin"
+    password: "admin123"
+    role: "administrator"
+  
+  regular_user:
+    username: "user1"
+    password: "user123"
+    role: "user"
+  
+  editor:
+    username: "editor1"
+    password: "editor123"
+    role: "editor"

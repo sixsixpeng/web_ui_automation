@@ -1,0 +1,21 @@
+pytest
+allure-pytest
+pytest-rerunfailures
+pytest-repeat
+pytest-assume
+pytest-timeout
+pytest-ordering
+pytest-dependency
+pytest-datadir
+pytest-mock
+pytest-env
+pytest-base-url
+pytest-sugar
+pytest-xdist
+Faker
+requests
+playwright
+pytest-playwright
+pyyaml
+pandas
+openpyxl  # pandas Excel 引擎，支持 .xlsx 文件读写

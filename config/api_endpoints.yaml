@@ -1,0 +1,28 @@
+# API 接口端点定义
+# 格式：模块名.接口名: 端点路径（相对于 api_base_url）
+
+auth:
+  login: "/api/v1/auth/login"
+  logout: "/api/v1/auth/logout"
+  refresh_token: "/api/v1/auth/refresh"
+
+user:
+  create_user: "/api/v1/users"
+  get_user: "/api/v1/users/{user_id}"
+  update_user: "/api/v1/users/{user_id}"
+  delete_user: "/api/v1/users/{user_id}"
+  list_users: "/api/v1/users"
+
+order:
+  create_order: "/api/v1/orders"
+  get_order: "/api/v1/orders/{order_id}"
+  update_order: "/api/v1/orders/{order_id}"
+  delete_order: "/api/v1/orders/{order_id}"
+  list_orders: "/api/v1/orders"
+
+product:
+  create_product: "/api/v1/products"
+  get_product: "/api/v1/products/{product_id}"
+  update_product: "/api/v1/products/{product_id}"
+  delete_product: "/api/v1/products/{product_id}"
+  list_products: "/api/v1/products"
