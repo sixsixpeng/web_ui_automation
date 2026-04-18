@@ -583,7 +583,9 @@ except ElementNotFoundException as e:
 - `APIClient(base_url)`: API客户端构造函数
 - `APIClient.get(endpoint)`, `APIClient.post(endpoint, data)`, `APIClient.put(endpoint, data)`, `APIClient.delete(endpoint)`
 - `BrowserWrapper(browser)`: 浏览器包装器构造函数
-- `BrowserWrapper.create_persistent_context()`: 创建持久化上下文
+- `BrowserWrapper.new_context_with_storage_state()`: 通过存储状态文件创建上下文
+- `BrowserWrapper.launch_persistent_context()`: 使用用户数据目录启动持久化上下文（仅 Chromium 系）
+- `BrowserWrapper.save_storage_state()`/`load_storage_state()`: 存储状态管理
 - `PageWrapper(page)`: 页面包装器构造函数
 - `PageWrapper.handle_dialog(accept=True, text=None)`: 处理对话框
 - `PageWrapper.download_file(selector)`: 下载文件

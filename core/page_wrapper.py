@@ -16,6 +16,9 @@ from playwright._impl._api_structures import ViewportSize
 from config.config_loader import config
 from core.exception_handle import ElementNotFoundException, TimeoutException, BrowserException
 from core.base_page import BasePage
+from common.log_utils import LogUtils
+
+logger = LogUtils.get_logger(__name__)
 
 
 class PageWrapper(BasePage):
@@ -53,7 +56,7 @@ class PageWrapper(BasePage):
     def _handle_dialog(self, dialog: Dialog):
         """处理对话框"""
         self._dialogs.append(dialog)
-        print(f"对话框出现: {dialog.type} - {dialog.message}")
+        logger.info(f"对话框出现: {dialog.type} - {dialog.message}")
     
     def _handle_download(self, download: Download):
         """处理下载"""
@@ -572,3 +575,246 @@ class PageWrapper(BasePage):
         
         with allure.step("清除 localStorage"):
             pass
+    
+    # ========== sessionStorage 操作 ==========
+    def get_session_storage(self, key: str = None) -> Any:
+        """
+        获取 sessionStorage 值
+        
+        Args:
+            key: 键名，如果为 None 则返回所有
+            
+        Returns:
+            Any: 存储的值
+        """
+        if key is None:
+            # 返回所有 sessionStorage
+            script = "return Object.keys(sessionStorage).reduce((obj, key) => { obj[key] = sessionStorage.getItem(key); return obj; }, {});"
+            return self.evaluate_script(script)
+        else:
+            script = f"return sessionStorage.getItem('{key}');"
+            return self.evaluate_script(script)
+    
+    def set_session_storage(self, key: str, value: str):
+        """
+        设置 sessionStorage 值
+        
+        Args:
+            key: 键名
+            value: 值
+        """
+        script = f"sessionStorage.setItem('{key}', '{value}');"
+        self.evaluate_script(script)
+        
+        with allure.step(f"设置 sessionStorage: {key}={value}"):
+            pass
+    
+    def clear_session_storage(self):
+        """清除 sessionStorage"""
+        script = "sessionStorage.clear();"
+        self.evaluate_script(script)
+        
+        with allure.step("清除 sessionStorage"):
+            pass
+    
+    # ========== 缓存管理工具 ==========
+    def save_cache_to_local_storage(self, cache_key: str, data: Dict[str, Any]):
+        """
+        保存数据到 localStorage 缓存
+        
+        Args:
+            cache_key: 缓存键名
+            data: 要缓存的数据
+        """
+        import json as json_module
+        json_str = json_module.dumps(data, ensure_ascii=False)
+        self.set_local_storage(cache_key, json_str)
+        
+        with allure.step(f"保存缓存到 localStorage: {cache_key}"):
+            allure.attach(
+                json_module.dumps(data, indent=2, ensure_ascii=False),
+                name=f"缓存数据_{cache_key}",
+                attachment_type=allure.attachment_type.JSON
+            )
+    
+    def load_cache_from_local_storage(self, cache_key: str) -> Optional[Dict[str, Any]]:
+        """
+        从 localStorage 缓存加载数据
+        
+        Args:
+            cache_key: 缓存键名
+            
+        Returns:
+            Optional[Dict[str, Any]]: 缓存数据，如果不存在则返回 None
+        """
+        import json as json_module
+        json_str = self.get_local_storage(cache_key)
+        if json_str:
+            try:
+                data = json_module.loads(json_str)
+                with allure.step(f"从 localStorage 加载缓存: {cache_key}"):
+                    allure.attach(
+                        json_module.dumps(data, indent=2, ensure_ascii=False),
+                        name=f"缓存数据_{cache_key}",
+                        attachment_type=allure.attachment_type.JSON
+                    )
+                return data
+            except:
+                return None
+        return None
+    
+    def clear_cache_from_local_storage(self, cache_key: str = None):
+        """
+        清除 localStorage 缓存
+        
+        Args:
+            cache_key: 缓存键名，如果为 None 则清除所有缓存
+        """
+        if cache_key:
+            self.set_local_storage(cache_key, "")
+            with allure.step(f"清除 localStorage 缓存: {cache_key}"):
+                pass
+        else:
+            self.clear_local_storage()
+    
+    def save_cache_to_session_storage(self, cache_key: str, data: Dict[str, Any]):
+        """
+        保存数据到 sessionStorage 缓存
+        
+        Args:
+            cache_key: 缓存键名
+            data: 要缓存的数据
+        """
+        import json as json_module
+        json_str = json_module.dumps(data, ensure_ascii=False)
+        self.set_session_storage(cache_key, json_str)
+        
+        with allure.step(f"保存缓存到 sessionStorage: {cache_key}"):
+            allure.attach(
+                json_module.dumps(data, indent=2, ensure_ascii=False),
+                name=f"缓存数据_{cache_key}",
+                attachment_type=allure.attachment_type.JSON
+            )
+    
+    def load_cache_from_session_storage(self, cache_key: str) -> Optional[Dict[str, Any]]:
+        """
+        从 sessionStorage 缓存加载数据
+        
+        Args:
+            cache_key: 缓存键名
+            
+        Returns:
+            Optional[Dict[str, Any]]: 缓存数据，如果不存在则返回 None
+        """
+        import json as json_module
+        json_str = self.get_session_storage(cache_key)
+        if json_str:
+            try:
+                data = json_module.loads(json_str)
+                with allure.step(f"从 sessionStorage 加载缓存: {cache_key}"):
+                    allure.attach(
+                        json_module.dumps(data, indent=2, ensure_ascii=False),
+                        name=f"缓存数据_{cache_key}",
+                        attachment_type=allure.attachment_type.JSON
+                    )
+                return data
+            except:
+                return None
+        return None
+    
+    def clear_cache_from_session_storage(self, cache_key: str = None):
+        """
+        清除 sessionStorage 缓存
+        
+        Args:
+            cache_key: 缓存键名，如果为 None 则清除所有缓存
+        """
+        if cache_key:
+            self.set_session_storage(cache_key, "")
+            with allure.step(f"清除 sessionStorage 缓存: {cache_key}"):
+                pass
+        else:
+            self.clear_session_storage()
+    
+    # ========== IndexedDB 工具方法（基础） ==========
+    def execute_indexeddb_transaction(self, database_name: str, store_name: str, operation: str, key: str = None, value: Any = None) -> Any:
+        """
+        执行 IndexedDB 事务操作
+        
+        Args:
+            database_name: 数据库名称
+            store_name: 对象存储名称
+            operation: 操作类型，'get', 'put', 'delete', 'clear'
+            key: 键名（对于 get、put、delete 操作）
+            value: 值（对于 put 操作）
+            
+        Returns:
+            Any: 操作结果
+            
+        Note:
+            这是一个基础方法，复杂的 IndexedDB 操作建议直接使用 evaluate_script
+        """
+        scripts = {
+            'get': f"""
+                return new Promise((resolve, reject) => {{
+                    const request = indexedDB.open('{database_name}');
+                    request.onsuccess = (event) => {{
+                        const db = event.target.result;
+                        const transaction = db.transaction(['{store_name}'], 'readonly');
+                        const store = transaction.objectStore('{store_name}');
+                        const getRequest = store.get('{key}');
+                        getRequest.onsuccess = () => resolve(getRequest.result);
+                        getRequest.onerror = () => reject(getRequest.error);
+                    }};
+                    request.onerror = () => reject(request.error);
+                }});
+            """,
+            'put': f"""
+                return new Promise((resolve, reject) => {{
+                    const request = indexedDB.open('{database_name}');
+                    request.onsuccess = (event) => {{
+                        const db = event.target.result;
+                        const transaction = db.transaction(['{store_name}'], 'readwrite');
+                        const store = transaction.objectStore('{store_name}');
+                        const putRequest = store.put({value}, '{key}');
+                        putRequest.onsuccess = () => resolve(putRequest.result);
+                        putRequest.onerror = () => reject(putRequest.error);
+                    }};
+                    request.onerror = () => reject(request.error);
+                }});
+            """,
+            'delete': f"""
+                return new Promise((resolve, reject) => {{
+                    const request = indexedDB.open('{database_name}');
+                    request.onsuccess = (event) => {{
+                        const db = event.target.result;
+                        const transaction = db.transaction(['{store_name}'], 'readwrite');
+                        const store = transaction.objectStore('{store_name}');
+                        const deleteRequest = store.delete('{key}');
+                        deleteRequest.onsuccess = () => resolve(deleteRequest.result);
+                        deleteRequest.onerror = () => reject(deleteRequest.error);
+                    }};
+                    request.onerror = () => reject(request.error);
+                }});
+            """,
+            'clear': f"""
+                return new Promise((resolve, reject) => {{
+                    const request = indexedDB.open('{database_name}');
+                    request.onsuccess = (event) => {{
+                        const db = event.target.result;
+                        const transaction = db.transaction(['{store_name}'], 'readwrite');
+                        const store = transaction.objectStore('{store_name}');
+                        const clearRequest = store.clear();
+                        clearRequest.onsuccess = () => resolve(clearRequest.result);
+                        clearRequest.onerror = () => reject(clearRequest.error);
+                    }};
+                    request.onerror = () => reject(request.error);
+                }});
+            """
+        }
+        
+        if operation not in scripts:
+            raise ValueError(f"不支持的 IndexedDB 操作: {operation}")
+        
+        script = scripts[operation]
+        return self.evaluate_script(script)

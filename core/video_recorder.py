@@ -13,6 +13,9 @@ from typing import Optional, List, Dict, Any
 from playwright.sync_api import Page, BrowserContext
 
 from config.config_loader import config
+from common.log_utils import LogUtils
+
+logger = LogUtils.get_logger(__name__)
 
 
 class VideoRecorder:
@@ -58,7 +61,7 @@ class VideoRecorder:
                 record_video_scale: 视频缩放比例
         """
         if self._is_recording:
-            print("视频录制已在进行中")
+            logger.warning("视频录制已在进行中")
             return
         
         # 设置录制选项

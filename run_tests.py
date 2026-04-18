@@ -17,6 +17,10 @@ import sys
 import subprocess
 import argparse
 from pathlib import Path
+from common.log_utils import LogUtils
+
+# 获取日志记录器
+logger = LogUtils.get_logger(__name__)
 
 
 def run_command(cmd, description):
@@ -27,10 +31,10 @@ def run_command(cmd, description):
         cmd: 命令列表
         description: 命令描述
     """
-    print(f"\n{'=' * 60}")
-    print(f"{description}")
-    print(f"{'=' * 60}")
-    print(f"执行命令: {' '.join(cmd)}")
+    logger.info(f"\n{'=' * 60}")
+    logger.info(f"{description}")
+    logger.info(f"{'=' * 60}")
+    logger.info(f"执行命令: {' '.join(cmd)}")
 
     try:
         # 使用字节模式捕获输出，然后尝试解码，忽略解码错误
@@ -47,12 +51,12 @@ def run_command(cmd, description):
         except:
             stderr = result.stderr.decode('gbk', errors='ignore')
         
-        print(stdout)
+        logger.info(stdout)
         if stderr:
-            print("错误输出:", stderr)
+            logger.warning(f"错误输出: {stderr}")
         return True
     except subprocess.CalledProcessError as e:
-        print(f"命令执行失败，退出码: {e.returncode}")
+        logger.error(f"命令执行失败，退出码: {e.returncode}")
         
         # 解码输出
         try:
@@ -65,18 +69,18 @@ def run_command(cmd, description):
         except:
             stderr = e.stderr.decode('gbk', errors='ignore') if e.stderr else ""
         
-        print(f"标准输出: {stdout}")
-        print(f"错误输出: {stderr}")
+        logger.info(f"标准输出: {stdout}")
+        logger.warning(f"错误输出: {stderr}")
         return False
 
 
 def install_dependencies():
     """安装项目依赖"""
-    print("正在安装依赖...")
+    logger.info("正在安装依赖...")
 
     # 检查 requirements.txt 是否存在
     if not Path("requirements.txt").exists():
-        print("错误: requirements.txt 文件不存在")
+        logger.error("错误: requirements.txt 文件不存在")
         return False
 
     cmd = [sys.executable, "-m", "pip", "install", "-r", "requirements.txt"]
@@ -201,8 +205,8 @@ def generate_report():
     try:
         subprocess.run(["allure", "--version"], check=True, capture_output=True)
     except (subprocess.CalledProcessError, FileNotFoundError):
-        print("Allure 未安装，跳过报告生成")
-        print("请安装 Allure: https://docs.qameta.io/allure/#_installing")
+        logger.warning("Allure 未安装，跳过报告生成")
+        logger.warning("请安装 Allure: https://docs.qameta.io/allure/#_installing")
         return False
 
     # 确保报告目录存在
@@ -210,7 +214,7 @@ def generate_report():
 
     cmd = ["allure", "generate", "report/allure_raw", "-o", "report/allure_html", "--clean"]
     if run_command(cmd, "生成 Allure 报告"):
-        print(f"\n报告已生成: file://{os.path.abspath('report/allure_html/index.html')}")
+        logger.info(f"\n报告已生成: file://{os.path.abspath('report/allure_html/index.html')}")
         return True
     return False
 
@@ -220,7 +224,7 @@ def open_report():
     # 检查报告是否存在
     report_index = Path("report/allure_html/index.html")
     if not report_index.exists():
-        print("报告不存在，请先运行测试并生成报告")
+        logger.warning("报告不存在，请先运行测试并生成报告")
         return False
 
     # 尝试在浏览器中打开报告
@@ -233,14 +237,14 @@ def open_report():
 
 def main():
     """简化的主函数 - 通过取消注释选择要运行的测试类型"""
-    print("=" * 60)
-    print("Web UI 自动化测试框架 - 简化运行脚本")
-    print("=" * 60)
-    print("\n说明：")
-    print("1. 通过取消注释下面的代码行来选择要运行的测试类型")
-    print("2. 注释掉其他不需要运行的测试类型")
-    print("3. 可以直接修改配置参数（浏览器类型、无头模式等）")
-    print("\n当前配置：")
+    logger.info("=" * 60)
+    logger.info("Web UI 自动化测试框架 - 简化运行脚本")
+    logger.info("=" * 60)
+    logger.info("\n说明：")
+    logger.info("1. 通过取消注释下面的代码行来选择要运行的测试类型")
+    logger.info("2. 注释掉其他不需要运行的测试类型")
+    logger.info("3. 可以直接修改配置参数（浏览器类型、无头模式等）")
+    logger.info("\n当前配置：")
     
     # ===== 配置参数 =====
     # 修改以下参数来调整测试行为
@@ -250,11 +254,11 @@ def main():
     env = "dev"                    # 测试环境: dev, staging, prod
     mark = None                    # pytest 标记选择器，例如: "smoke", "regression"
     
-    print(f"  浏览器类型: {browser_type}")
-    print(f"  无头模式: {headless}")
-    print(f"  并行执行: {parallel}")
-    print(f"  测试环境: {env}")
-    print(f"  测试标记: {mark or '默认'}")
+    logger.info(f"  浏览器类型: {browser_type}")
+    logger.info(f"  无头模式: {headless}")
+    logger.info(f"  并行执行: {parallel}")
+    logger.info(f"  测试环境: {env}")
+    logger.info(f"  测试标记: {mark or '默认'}")
     
     # 设置环境变量
     os.environ["TEST_ENV"] = env

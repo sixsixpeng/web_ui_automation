@@ -12,6 +12,9 @@ from playwright.sync_api import sync_playwright, Browser, BrowserContext, Page
 
 from config.config_loader import config
 from core.exception_handle import BrowserException
+from common.log_utils import LogUtils
+
+logger = LogUtils.get_logger(__name__)
 
 
 class BrowserManager:
@@ -93,7 +96,7 @@ class BrowserManager:
             # 设置默认超时
             self._context.set_default_timeout(config.get("timeout", 30000))
             
-            print(f"浏览器已启动: {browser_type} {'(无头模式)' if headless else ''}")
+            logger.info(f"浏览器已启动: {browser_type} {'(无头模式)' if headless else ''}")
             
         except Exception as e:
             raise BrowserException(f"启动浏览器失败: {str(e)}")
@@ -174,7 +177,7 @@ class BrowserManager:
             # 设置默认超时
             self._context.set_default_timeout(config.get("timeout", 30000))
             
-            print(f"持久化浏览器已启动: {browser_type} (用户数据目录: {user_data_dir}) {'(无头模式)' if headless else ''}")
+            logger.info(f"持久化浏览器已启动: {browser_type} (用户数据目录: {user_data_dir}) {'(无头模式)' if headless else ''}")
             
         except Exception as e:
             raise BrowserException(f"启动持久化浏览器失败: {str(e)}")
@@ -226,7 +229,7 @@ class BrowserManager:
             self._playwright.stop()
             self._playwright = None
         
-        print("浏览器已关闭")
+        logger.info("浏览器已关闭")
     
     def save_storage_state(self, file_path: str):
         """保存浏览器存储状态（cookies, localStorage等）"""

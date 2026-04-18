@@ -78,7 +78,7 @@ class TestDemoAllFeatures:
         
         # 2. 创建持久化上下文
         with allure.step("创建持久化上下文"):
-            context = browser_wrapper.create_persistent_context(
+            context = browser_wrapper.new_context_with_storage_state(
                 storage_state_path="playwright_cache/storage_state.json"
             )
             self.logger.info("持久化上下文创建成功")

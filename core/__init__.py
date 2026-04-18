@@ -43,7 +43,10 @@
 - event_helper.py: 事件助手，处理页面事件，如请求、响应、控制台消息、页面错误等
 - video_recorder.py: 视频录制器，封装 Playwright 视频录制功能
 - debug_helper.py: 调试助手，提供调试功能，如暂停、慢动作、追踪、性能分析等
-- browser_wrapper.py: 浏览器包装器，封装 Browser 对象，提供浏览器级别操作和持久化上下文支持
+- browser_wrapper.py: 浏览器包装器，封装 Browser 对象，提供浏览器级别操作和独立的持久化上下文支持：
+  * new_context_with_storage_state(): 通过存储状态文件加载 cookies/localStorage
+  * launch_persistent_context(): 使用用户数据目录启动真正的持久化上下文（仅 Chromium 系）
+  * save_storage_state()/load_storage_state(): 存储状态管理
 
 使用方式：
 1. 通过 browser_manager 全局实例管理浏览器生命周期

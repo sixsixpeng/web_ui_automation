@@ -8,8 +8,10 @@ import allure
 import time
 from typing import Optional, List, Callable
 from playwright.sync_api import Page, Dialog
-
 from core.exception_handle import BrowserException, TimeoutException
+from common.log_utils import LogUtils
+
+logger = LogUtils.get_logger(__name__)
 
 
 class DialogHandler:
@@ -42,7 +44,7 @@ class DialogHandler:
         
         # 记录对话框信息
         dialog_info = f"对话框出现: {dialog.type} - {dialog.message}"
-        print(dialog_info)
+        logger.info(dialog_info)
         
         with allure.step(dialog_info):
             # 附加对话框信息到报告

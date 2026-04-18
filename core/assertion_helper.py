@@ -8,8 +8,10 @@ import allure
 import time
 from typing import Optional, Union, List, Dict, Any, Callable
 from playwright.sync_api import Page, Locator, expect
-
 from core.exception_handle import TimeoutException
+from common.log_utils import LogUtils
+
+logger = LogUtils.get_logger(__name__)
 
 
 class AssertionHelper:
@@ -499,7 +501,7 @@ class AssertionHelper:
                     with allure.step(f"断言成功: {message}"):
                         return True
             except Exception as e:
-                print(f"条件检查失败: {e}")
+                logger.error(f"条件检查失败: {e}")
             
             time.sleep(0.1)  # 100ms 轮询
         
@@ -587,7 +589,7 @@ class AssertionHelper:
         except AssertionError as e:
             # 记录失败但不抛出
             error_msg = f"软断言失败: {str(e)}"
-            print(error_msg)
+            logger.warning(error_msg)
             allure.attach(
                 error_msg,
                 name="软断言失败",
@@ -596,7 +598,7 @@ class AssertionHelper:
             return False
         except Exception as e:
             error_msg = f"软断言异常: {str(e)}"
-            print(error_msg)
+            logger.warning(error_msg)
             allure.attach(
                 error_msg,
                 name="软断言异常",

@@ -9,6 +9,9 @@ import json
 import time
 from typing import Optional, List, Dict, Any, Callable
 from playwright.sync_api import Page, Request, Response, ConsoleMessage, WebSocket, Dialog
+from common.log_utils import LogUtils
+
+logger = LogUtils.get_logger(__name__)
 
 
 class EventHelper:

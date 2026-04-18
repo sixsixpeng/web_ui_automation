@@ -12,6 +12,9 @@ import traceback
 from typing import Optional, Callable, Any, Dict, List
 from playwright.sync_api import Page, BrowserContext, Locator
 from contextlib import contextmanager
+from common.log_utils import LogUtils
+
+logger = LogUtils.get_logger(__name__)
 
 
 class DebugHelper:
@@ -77,11 +80,11 @@ class DebugHelper:
         Args:
             message: 暂停消息
         """
-        print(f"\n{'='*60}")
-        print(f"调试暂停: {message}")
-        print(f"当前 URL: {self._page.url}")
-        print(f"按 Enter 键继续...")
-        print(f"{'='*60}")
+        logger.info(f"\n{'='*60}")
+        logger.info(f"调试暂停: {message}")
+        logger.info(f"当前 URL: {self._page.url}")
+        logger.info(f"按 Enter 键继续...")
+        logger.info(f"{'='*60}")
         
         # 附加信息到 Allure 报告
         with allure.step(f"调试暂停: {message}"):
@@ -122,7 +125,7 @@ class DebugHelper:
                 sources: 是否保存源代码
         """
         if self._trace_enabled:
-            print("追踪已在进行中")
+            logger.warning("追踪已在进行中")
             return
         
         self._trace_enabled = True

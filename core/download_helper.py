@@ -11,8 +11,10 @@ import shutil
 from pathlib import Path
 from typing import Optional, List, Dict, Any, Callable
 from playwright.sync_api import Page, Download
-
 from core.exception_handle import TimeoutException, BrowserException
+from common.log_utils import LogUtils
+
+logger = LogUtils.get_logger(__name__)
 
 
 class DownloadHelper:
