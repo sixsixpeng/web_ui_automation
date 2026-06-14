@@ -1,335 +1,176 @@
-# -*- coding: UTF-8 -*-
-"""
-pytest 配置文件
-定义全局夹具和测试钩子
-"""
-
-import os
-import pytest
+# -*- coding: utf-8 -*-
+"""Global conftest - fully custom fixtures (no pytest-playwright)"""
 import allure
-from pathlib import Path
-from typing import Generator, Optional
+import pytest
+from _pytest.nodes import Item
 
-from playwright.sync_api import Page
+from utils import get_logger, mail_sender
+from utils.config_util import get as cfg, get_env_config
 
-from config.config_loader import config
-from core.browser import browser_manager
-from core.api_client import APIClient
-from common.log_utils import LogUtils
-from common.allure_utils import allure_utils
+logger = get_logger("conftest")
 
 
-# 设置环境变量
-os.environ["TEST_ENV"] = os.getenv("TEST_ENV", "dev")
+def pytest_configure(config):
+    for m in ["smoke", "regression", "critical", "login", "product", "demo", "compatibility", "async"]:
+        config.addinivalue_line("markers", m)
 
 
-@pytest.fixture(scope="session", autouse=True)
-def setup_test_environment():
-    """
-    测试环境初始化（会话级别）
-    """
-    # 初始化日志系统
-    LogUtils.setup_logging()
-    logger = LogUtils.get_logger(__name__)
-    
-    logger.info("=" * 60)
-    logger.info("开始测试执行")
-    logger.info(f"测试环境: {config.get('env')}")
-    logger.info(f"基础URL: {config.get_base_url()}")
-    logger.info(f"API基础URL: {config.get_api_base_url()}")
-    logger.info(f"浏览器类型: {config.get('browser_type')}")
-    logger.info("=" * 60)
-    
-    # 确保必要的目录存在
-    required_dirs = [
-        config.get("log_dir"),
-        config.get("screenshot_dir"),
-        config.get("report_dir"),
-        config.get("playwright_cache_dir"),
-        config.get("data_dir")
-    ]
-    
-    for dir_path in required_dirs:
-        Path(dir_path).mkdir(parents=True, exist_ok=True)
-    
-    yield
-    
-    # 测试会话结束后的清理工作
-    logger.info("=" * 60)
-    logger.info("测试执行结束")
-    logger.info("=" * 60)
+def _build_opts(request):
+    opts = {
+        "headless": cfg("headless", "false").lower() == "true",
+        "slow_mo": int(cfg("step_delay_ms", 0)),
+        "args": cfg("browser.args", [
+            "--disable-features=Translate", "--disable-gpu", "--no-first-run",
+            "--no-default-browser-check", "--disable-popup-blocking",
+        ]),
+    }
+    if hasattr(request, "param") and request.param:
+        if isinstance(request.param, dict):
+            opts.update(request.param)
+        elif isinstance(request.param, str):
+            opts["browser_type"] = request.param
+    return opts
 
 
+# ====== Sync Fixtures ======
+@pytest.fixture(scope="function")
+def playwright_sync():
+    from playwright.sync_api import sync_playwright
+    with sync_playwright() as p:
+        yield p
+
+
+@pytest.fixture(scope="function")
+def browser_sync(request, playwright_sync):
+    opts = _build_opts(request)
+    bt = opts.pop("browser_type", cfg("browser_type", "chromium"))
+    b = getattr(playwright_sync, bt).launch(**opts)
+    yield b
+    b.close()
+
+
+@pytest.fixture(scope="function")
+def context_sync(browser_sync):
+    vp = cfg("browser.viewport", {"width": 1920, "height": 1080})
+    ctx = browser_sync.new_context(viewport=vp, locale="zh-CN")
+    yield ctx
+    ctx.close()
+
+
+@pytest.fixture(scope="function")
+def page_sync(context_sync):
+    pg = context_sync.new_page()
+    pg.set_default_timeout(int(cfg("timeout.default", 30000)))
+    yield pg
+    pg.close()
+
+
+# ====== Async Fixtures ======
+@pytest.fixture(scope="function")
+async def playwright_async():
+    from playwright.async_api import async_playwright
+    async with async_playwright() as p:
+        yield p
+
+
+@pytest.fixture(scope="function")
+async def browser_async(request, playwright_async):
+    opts = _build_opts(request)
+    bt = opts.pop("browser_type", cfg("browser_type", "chromium"))
+    b = await getattr(playwright_async, bt).launch(**opts)
+    yield b
+    await b.close()
+
+
+@pytest.fixture(scope="function")
+async def context_async(browser_async):
+    vp = cfg("browser.viewport", {"width": 1920, "height": 1080})
+    ctx = await browser_async.new_context(viewport=vp, locale="zh-CN")
+    yield ctx
+    await ctx.close()
+
+
+@pytest.fixture(scope="function")
+async def page_async(context_async):
+    pg = await context_async.new_page()
+    pg.set_default_timeout(int(cfg("timeout.default", 30000)))
+    yield pg
+    await pg.close()
+
+
+# ====== Persistent Context Fixture ======
+@pytest.fixture(scope="function")
+def persistent_context(request):
+    from playwright.sync_api import sync_playwright
+    from utils.path_util import path_util
+    cache_root = path_util.root / "browser_data"
+    cache_root.mkdir(parents=True, exist_ok=True)
+    if hasattr(request, "param") and request.param:
+        user_dir = str(request.param)
+    else:
+        user_dir = str(cache_root / "default")
+    with sync_playwright() as p:
+        ctx = p.chromium.launch_persistent_context(user_dir, headless=False, viewport={"width": 1920, "height": 1080})
+        yield ctx
+        ctx.close()
+
+
+@pytest.fixture(scope="function")
+def page_persistent(persistent_context):
+    pg = persistent_context.pages[0] if persistent_context.pages else persistent_context.new_page()
+    pg.set_default_timeout(int(cfg("timeout.default", 30000)))
+    yield pg
+
+
+# ====== Environment Config ======
 @pytest.fixture(scope="session")
-def browser() -> Generator:
-    """
-    浏览器会话夹具（会话级别）
-    """
-    logger = LogUtils.get_logger("browser_fixture")
-    
-    try:
-        logger.info("启动浏览器会话")
-        browser_manager.start_browser()
-        
-        yield browser_manager
-        
-    finally:
-        logger.info("关闭浏览器会话")
-        browser_manager.close_browser()
+def env_config():
+    return get_env_config()
 
 
-@pytest.fixture(scope="function")
-def page(browser) -> Generator[Page, None, None]:
-    """
-    页面夹具（函数级别）
-    
-    Args:
-        browser: 浏览器会话夹具
-    """
-    logger = LogUtils.get_logger("page_fixture")
-    test_page = None
-    
-    try:
-        logger.info("创建新页面")
-        test_page = browser_manager.new_page()
-        
-        # 设置视口大小
-        viewport = config.get("viewport", {"width": 1920, "height": 1080})
-        test_page.set_viewport_size(viewport)
-        
-        # 设置超时时间
-        timeout = config.get("timeout", 30000)
-        test_page.set_default_timeout(timeout)
-        test_page.set_default_navigation_timeout(timeout)
-        
-        # 添加 Allure 步骤
-        with allure.step("初始化浏览器页面"):
-            allure.attach(
-                f"视口大小: {viewport}\n超时时间: {timeout}ms",
-                name="页面配置",
-                attachment_type=allure.attachment_type.TEXT
-            )
-        
-        yield test_page
-        
-    finally:
-        if test_page:
-            logger.info("关闭页面")
-            test_page.close()
-
-
-@pytest.fixture(scope="session")
-def api_client() -> APIClient:
-    """
-    API 客户端夹具（会话级别）
-    """
-    logger = LogUtils.get_logger("api_client_fixture")
-    logger.info("初始化 API 客户端")
-    
-    client = APIClient()
-    
-    # 设置认证信息（从配置读取）
-    username = config.get("username")
-    password = config.get("password")
-    
-    if username and password:
-        logger.info(f"设置基本认证: {username}")
-        client.set_basic_auth(username, password)
-    
-    return client
-
-
-@pytest.fixture(scope="function")
-def login_page(page):
-    """
-    登录页面夹具（函数级别）
-    
-    Args:
-        page: 页面夹具
-    """
-    from page.login_page import LoginPage
-    return LoginPage(page)
-
-
-@pytest.fixture(scope="function")
-def auth_api():
-    """
-    认证 API 夹具（函数级别）
-    """
-    from api.auth_api import AuthAPI
-    return AuthAPI()
-
-
-@pytest.fixture(scope="function")
-def user_api():
-    """
-    用户 API 夹具（函数级别）
-    """
-    from api.user_api import UserAPI
-    return UserAPI()
-
-
-@pytest.fixture(scope="function", autouse=True)
-def log_test_info(request):
-    """
-    记录测试信息（自动使用）
-    """
-    logger = LogUtils.get_logger("test_info")
-    
-    # 获取测试信息
-    test_name = request.node.name
-    test_module = request.node.module.__name__ if request.node.module else "未知模块"
-    
-    # 记录测试开始
-    LogUtils.log_test_start(test_name, test_module)
-    
-    # 添加 Allure 标签
-    allure.dynamic.title(test_name)
-    allure.dynamic.description(f"测试模块: {test_module}")
-    
-    # 获取测试标记
-    markers = [marker.name for marker in request.node.own_markers]
-    if markers:
-        allure.dynamic.tag(*markers)
-        logger.info(f"测试标记: {', '.join(markers)}")
-    
+# ====== Auto Tagging ======
+@pytest.fixture(autouse=True)
+def _auto_tag(request):
+    allure.dynamic.tag(cfg("run.env", "test"))
+    node = request.node.nodeid.lower()
+    if "login" in node:
+        allure.dynamic.feature("Login")
+    elif "product" in node:
+        allure.dynamic.feature("Product")
     yield
-    
-    # 记录测试结束
-    LogUtils.log_test_end(test_name, test_module)
 
 
+# ====== Failure Screenshot Hook ======
 @pytest.hookimpl(tryfirst=True, hookwrapper=True)
-def pytest_runtest_makereport(item, call):
-    """
-    处理测试报告，添加失败截图
-    """
+def pytest_runtest_makereport(item: Item, call):
     outcome = yield
     report = outcome.get_result()
-    
-    # 只在测试失败时执行
-    if report.when == "call" and report.failed:
-        logger = LogUtils.get_logger("failure_handler")
-        logger.error(f"测试失败: {item.name}")
-        
-        # 尝试获取页面对象并截图
-        try:
-            # 查找页面夹具
-            page_fixture = None
-            for fixture_name in item.fixturenames:
-                if "page" in fixture_name:
-                    try:
-                        page_fixture = item.funcargs.get(fixture_name)
-                        if page_fixture:
-                            break
-                    except:
-                        continue
-            
-            if page_fixture:
-                # 截取失败截图
-                screenshot_name = f"failure_{item.name}_{report.when}"
-                allure_utils.attach_screenshot(page_fixture, screenshot_name)
-                
-                # 附加页面源代码
-                allure_utils.attach_page_source(page_fixture, f"page_source_{item.name}")
-                
-                logger.info(f"已添加失败截图: {screenshot_name}")
-        except Exception as e:
-            logger.warning(f"添加失败截图时出错: {str(e)}")
-        
-        # 附加测试日志到 Allure
-        LogUtils.attach_log_to_allure()
+    if report.when == "call":
+        mail_sender.add_result(node_id=report.nodeid, status="passed" if report.passed else ("skipped" if report.skipped else "failed"), duration=getattr(report, "duration", 0), error=str(report.longrepr) if report.failed else "")
+        if report.failed:
+            _capture(item)
 
 
-@pytest.fixture(scope="function")
-def cleanup_test_data():
-    """
-    测试数据清理夹具
-    """
-    test_data = []
-    
-    def add_cleanup(data_id: str, cleanup_func):
-        """
-        添加清理函数
-        
-        Args:
-            data_id: 数据ID
-            cleanup_func: 清理函数
-        """
-        test_data.append((data_id, cleanup_func))
-    
-    yield add_cleanup
-    
-    # 测试结束后执行清理
-    logger = LogUtils.get_logger("cleanup")
-    for data_id, cleanup_func in test_data:
-        try:
-            logger.info(f"清理测试数据: {data_id}")
-            cleanup_func()
-        except Exception as e:
-            logger.warning(f"清理数据 {data_id} 时出错: {str(e)}")
+def _capture(item):
+    page = (getattr(item, "funcargs", {}).get("page_sync") or getattr(item, "funcargs", {}).get("page") or getattr(item, "funcargs", {}).get("page_async"))
+    if page is None: return
+    try:
+        from utils.screenshot_util import ScreenshotSyncUtil
+        ScreenshotSyncUtil.take_window_screenshot(page, name="failure_window", attach_allure=True)
+        ScreenshotSyncUtil.take_full_page_screenshot(page, name="failure_fullpage", attach_allure=True)
+        allure.attach(str(page.url), name="failure_url", attachment_type=allure.attachment_type.TEXT)
+    except Exception as e:
+        logger.warning(f"Failure screenshot: {e}")
 
 
-@pytest.fixture(scope="function")
-def random_user_data():
-    """
-    生成随机用户数据夹具
-    """
-    from common.data_generator import data_generator
-    return data_generator.user_data()
-
-
-@pytest.fixture(scope="function")
-def random_product_data():
-    """
-    生成随机产品数据夹具
-    """
-    from common.data_generator import data_generator
-    return data_generator.product_data()
-
-
-# 命令行选项
-def pytest_addoption(parser):
-    """添加命令行选项"""
-    parser.addoption(
-        "--env",
-        action="store",
-        default="dev",
-        help="测试环境: dev, staging, prod"
-    )
-    parser.addoption(
-        "--browser-type",
-        action="store",
-        default="chromium",
-        help="浏览器类型: chromium, firefox, webkit"
-    )
-    parser.addoption(
-        "--headless",
-        action="store_true",
-        default=False,
-        help="是否使用无头模式"
-    )
-
-
-@pytest.fixture(scope="session", autouse=True)
-def configure_environment(request):
-    """
-    根据命令行选项配置环境
-    """
-    # 设置环境变量
-    env = request.config.getoption("--env")
-    os.environ["TEST_ENV"] = env
-    
-    # 可以在这里更新配置，但注意 config 已经加载
-    # 更好的做法是在测试开始前重新加载配置
-    logger = LogUtils.get_logger("environment")
-    logger.info(f"命令行指定环境: {env}")
-    
-    browser_type = request.config.getoption("--browser-type")
-    if browser_type:
-        # 更新配置（注意：这不会影响已经加载的配置）
-        logger.info(f"命令行指定浏览器: {browser_type}")
-    
-    headless = request.config.getoption("--headless")
-    if headless:
-        logger.info("使用无头模式")
+def pytest_sessionfinish(session, exitstatus):
+    logger.info(f"Test session finished, exit code: {exitstatus}")
+    try:
+        mail_sender.send_report()
+    except:
+        pass
+    try:
+        from utils.file_util import file_util
+        file_util.cleanup_temp_files()
+    except:
+        pass

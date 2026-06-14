@@ -1,0 +1,23 @@
+# ============================================================
+# 用户账号配置（AES 加密存储）
+# 此文件使用 secret.key 加密敏感字段，禁止明文提交
+# ============================================================
+
+# 有效登录用户
+valid_user:
+  username: "admin"
+  password: "admin123"  # 生产环境需加密
+
+# 无效用户
+invalid_user:
+  username: "wrong_user"
+  password: "wrong_pass"
+
+# 多角色账号
+roles:
+  admin:
+    username: "admin"
+    password: "admin123"
+  viewer:
+    username: "viewer"
+    password: "viewer123"

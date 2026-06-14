@@ -1,21 +1,40 @@
-pytest
-allure-pytest
-pytest-rerunfailures
-pytest-repeat
-pytest-assume
-pytest-timeout
-pytest-ordering
-pytest-dependency
-pytest-datadir
-pytest-mock
-pytest-env
-pytest-base-url
-pytest-sugar
-pytest-xdist
-Faker
-requests
-playwright
-pytest-playwright
-pyyaml
-pandas
-openpyxl  # pandas Excel 引擎，支持 .xlsx 文件读写
+# ============================================================
+# Web UI Automation Framework - 依赖清单
+# Python 3.10 环境 - 经过兼容性验证的版本
+# 安装: pip install -r requirements.txt
+# ============================================================
+
+# ===== 核心测试框架 =====
+pytest==8.4.2                    # 测试引擎 (8.x 兼容最新 pytest-asyncio)
+pytest-asyncio==0.25.3           # 异步协程支持 (与 pytest 8.x 兼容)
+playwright==1.52.0               # 浏览器自动化内核
+pytest-xdist==3.6.1              # 多进程并发执行
+
+# ===== 报告 =====
+allure-pytest==2.13.5            # Allure 可视化报告
+
+# ===== 配置 & 数据处理 =====
+PyYAML==6.0.2                    # YAML 配置文件解析
+openpyxl==3.1.5                  # Excel 读写
+
+# ===== 测试数据 =====
+Faker==28.0.0                    # 随机测试数据生成
+
+# ===== 加密 =====
+cryptography==44.0.0             # AES 对称加密
+
+# ===== 图片处理 =====
+Pillow==11.1.0                   # 截图 URL 水印拼接
+
+# ===== 数据库（可选）=====
+pymysql==1.1.1                   # MySQL 数据库操作
+# psycopg2-binary>=2.9           # PostgreSQL（按需启用）
+
+# ===== HTTP 请求 =====
+requests==2.32.3                 # API 请求客户端
+
+# ===== 可选增强 =====
+tqdm>=4.66                      # 进度条
+pytest-rerunfailures>=14.0     # 失败重跑
+pytest-sugar>=1.0               # 美化输出
+

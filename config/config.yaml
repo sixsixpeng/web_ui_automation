@@ -1,74 +1,121 @@
-# 自动化测试框架全局配置
-# 通过环境变量 TEST_ENV 切换环境，默认使用 dev
+# ============================================================
+# Web UI Automation Framework - 全局配置
+# ============================================================
 
-base:
-  # 日志配置
-  log_level: INFO
-  log_dir: ../log
-  # 日志格式配置
-  log_formats:
-    console: "%(asctime)s | %(levelname)-8s | %(module)-15s | %(name)-25s | %(message)s"
-    file: "%(asctime)s | %(levelname)-8s | %(module)-15s | %(name)-25s | %(filename)s:%(lineno)d | %(message)s"
-  # 日志颜色配置（控制台）
-  log_colors:
-    DEBUG: "cyan"
-    INFO: "green"
-    WARNING: "yellow"
-    ERROR: "red"
-    CRITICAL: "bold_red"
-  # 模块特定日志级别
-  log_modules:
-    test: INFO
-    api: INFO
-    browser: INFO
-    element: DEBUG
-    performance: INFO
-    playwright: WARNING
-    urllib3: WARNING
-    selenium: WARNING
-  # 日志文件配置
-  log_file_max_size: 10485760  # 10MB
-  log_file_backup_count: 5
-  # 控制台日志输出
-  console_log_enabled: true
-  console_log_level: INFO
-  # 文件日志输出
-  file_log_enabled: true
-  file_log_level: DEBUG
-  
-  screenshot_dir: ../screenshot
-  report_dir: ../report
-  playwright_cache_dir: ../playwright_cache
-
-  # 浏览器配置
-  browser_type: chromium  # chromium, firefox, webkit, chrome, edge
+run:
+  mode: sync
+  env: test
+  browser: chromium
   headless: false
-  viewport: { width: 1920, height: 1080 }
-  slow_mo: 100  # 操作延迟（毫秒），调试时可增大
-  timeout: 30000  # 默认超时时间（毫秒）
-  # 浏览器可执行文件路径（可选）
-  # browser_executable_path: "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe"
+  workers: 4
 
-  # 测试数据配置
-  data_dir: ../test_data
+step_delay_ms: 100             # 步骤间延时（毫秒），>0 可减缓执行速度用于调试
+timeout:
+  default: 30000
+  page_load: 60000
+  element: 10000
+  assertion: 5000
 
-# 开发环境
-dev:
-  base_url: "https://dev.example.com"
-  api_base_url: "https://dev-api.example.com"
-  username: "test_user"
-  password: "test_pass"
+browser:
+  viewport:
+    width: 1920
+    height: 1080
+  args:
+    - --disable-blink-features=AutomationControlled
+    - --disable-dev-shm-usage
+  proxy:
+    enabled: true
+    server: ""
+    username: ""
+    password: ""
 
-# 测试环境
-staging:
-  base_url: "https://staging.example.com"
-  api_base_url: "https://staging-api.example.com"
-  username: "staging_user"
-  password: "staging_pass"
+async:
+  default_concurrency: 5
+  max_concurrency: 10
+  auto_control: true
 
-# 生产环境（谨慎使用）
-prod:
-  base_url: "https://example.com"
-  api_base_url: "https://api.example.com"
-  username: "prod_user"
-  password: "prod_pass"
+allure:
+  raw_data_path: reports/allure/raw
+  static_report_path: reports/allure/static
+  auto_generate_static: true
+  attach_static_zip_to_mail:
+  strategy: fail
+  timeout: 30
+  retry_times: 2
+  zip_screenshots: true
+  zip_logs: true
+
+logging:
+  level: DEBUG
+  file:
+    enabled: true
+    max_size_mb: 500
+  keep_days: 7
+  format: "%(asctime)s | %(levelname)-8s | %(name)s | %(process)d | %(filename)s:%(lineno)d | %(message)s"
+  enable_desensitization: true
+
+screenshot:
+  save_dir: screenshots
+  enable_url_overlay: true
+  image_format: png
+  cleanup_days: 7
+  auto_attach_allure: true
+
+mail:
+  prefix: "[Web Automation]"
+  strategy: fail
+  timeout: 30
+  retry_times: 2
+  zip_screenshots: true
+  zip_logs: true
+
+retry:
+  max_retry_times: 3
+  retry_interval_ms: 500
+  retryable_exceptions:
+    - TimeoutError
+    - ElementNotVisibleError
+    - ElementNotInteractableError
+    - StaleElementReferenceError
+    - NetworkError
+
+performance:
+  enabled: true
+  lcp_threshold_ms: 2500
+  load_threshold_ms: 5000
+  collect_resource_details: true
+
+network:
+  intercept_enabled: true
+  filter_static: true
+  max_cache_count: 200
+  capture_request_body: true
+  capture_response_body: true
+
+environments:
+  dev:
+    base_url: https://dev.example.com
+    description: 开发环境
+  test:
+    base_url: https://test.example.com
+    description: 测试环境
+  pre:
+    base_url: https://pre.example.com
+    description: 预发布环境
+  prod:
+    base_url: https://example.com
+    description: 生产环境
+
+# 数据库
+database:
+  host: localhost
+  port: 3306
+  user: root
+  password: root
+  name: test_db
+
+# 万能验证码（测试环境使用，跳过验证码识别）
+universal_captcha: "0000"
+
+# Faker 随机种子（设值后可复现随机数据）
+faker_seed: ""

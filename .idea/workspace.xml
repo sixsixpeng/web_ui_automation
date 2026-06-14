@@ -5,20 +5,52 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="318ecf74-b2a9-4a86-880c-482d10df5e09" name="更改" comment="init">
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/web_ui_automation.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/web_ui_automation.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/core/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/assertion_helper.py" beforeDir="false" afterPath="$PROJECT_DIR$/core/assertion_helper.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/browser.py" beforeDir="false" afterPath="$PROJECT_DIR$/core/browser.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/browser_wrapper.py" beforeDir="false" afterPath="$PROJECT_DIR$/core/browser_wrapper.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/debug_helper.py" beforeDir="false" afterPath="$PROJECT_DIR$/core/debug_helper.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/dialog_handler.py" beforeDir="false" afterPath="$PROJECT_DIR$/core/dialog_handler.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/download_helper.py" beforeDir="false" afterPath="$PROJECT_DIR$/core/download_helper.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/event_helper.py" beforeDir="false" afterPath="$PROJECT_DIR$/core/event_helper.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/page_wrapper.py" beforeDir="false" afterPath="$PROJECT_DIR$/core/page_wrapper.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/video_recorder.py" beforeDir="false" afterPath="$PROJECT_DIR$/core/video_recorder.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/api/__init__.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/api/auth_api.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/api/user_api.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/common/__init__.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/common/allure_utils.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/common/data_generator.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/common/file_utils.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/common/log_utils.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/config/__init__.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/config/api_endpoints.yaml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/config/config.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/config/config.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config/config_loader.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/conftest.py" beforeDir="false" afterPath="$PROJECT_DIR$/conftest.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/__init__.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/api_client.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/assertion_helper.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/base_page.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/browser.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/browser_wrapper.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/debug_helper.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/dialog_handler.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/download_helper.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/event_helper.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/exception_handle.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/keyboard_mouse_helper.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/locator_wrapper.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/page_wrapper.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/video_recorder.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/wait_helper.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/page/__init__.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/page/login_page.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pytest.ini" beforeDir="false" afterPath="$PROJECT_DIR$/pytest.ini" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/readme.md" beforeDir="false" afterPath="$PROJECT_DIR$/readme.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/replace_prints.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/run_tests.py" beforeDir="false" afterPath="$PROJECT_DIR$/run_tests.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test_case/test_demo_all_features.py" beforeDir="false" afterPath="$PROJECT_DIR$/test_case/test_demo_all_features.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test_case/__init__.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test_case/test_demo_all_features.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test_case/test_example.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test_case/test_login.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test_case/test_user_api.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test_data/login_data.yaml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test_data/user_data.yaml" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -35,6 +67,18 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;sixsixpeng&quot;
+  }
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/sixsixpeng/web_ui_automation.git&quot;,
+    &quot;accountId&quot;: &quot;fd972b25-cf83-4322-a85a-8c8f02c5e746&quot;
+  }
+}</component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 7
 }</component>
@@ -48,7 +92,10 @@
   </component>
   <component name="PropertiesComponent">{
   &quot;keyToString&quot;: {
+    &quot;Python 测试.concurrent_patterns.TestAsyncConcurrent 的 Python 测试.executor&quot;: &quot;Run&quot;,
     &quot;Python.conftest.executor&quot;: &quot;Run&quot;,
+    &quot;Python.run_async_gather.executor&quot;: &quot;Run&quot;,
+    &quot;Python.run_compare_concurrency.executor&quot;: &quot;Run&quot;,
     &quot;Python.run_tests.executor&quot;: &quot;Run&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
@@ -61,6 +108,7 @@
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
     &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
     &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;run.code.analysis.last.selected.profile&quot;: &quot;pProject Default&quot;,
     &quot;settings.editor.selected.configurable&quot;: &quot;com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable&quot;,
     &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
@@ -74,7 +122,7 @@
       <recent name="E:\code\web_ui_automation\report" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.run_tests">
+  <component name="RunManager" selected="Python.run_async_gather">
     <configuration name="conftest" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="web_ui_automation" />
       <option name="ENV_FILES" value="" />
@@ -125,6 +173,54 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
+    <configuration name="run_async_gather" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="web_ui_automation" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="DEBUG_JUST_MY_CODE" value="false" />
+      <option name="RUN_TOOL" value="" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/run_async_gather.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="run_compare_concurrency" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="web_ui_automation" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="DEBUG_JUST_MY_CODE" value="false" />
+      <option name="RUN_TOOL" value="" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/run_compare_concurrency.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
     <configuration name="run_tests" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="web_ui_automation" />
       <option name="ENV_FILES" value="" />
@@ -150,8 +246,28 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
+    <configuration name="concurrent_patterns.TestAsyncConcurrent 的 Python 测试" type="tests" factoryName="Autodetect" temporary="true" nameIsGenerated="true">
+      <module name="web_ui_automation" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="DEBUG_JUST_MY_CODE" value="false" />
+      <option name="RUN_TOOL" value="" />
+      <option name="_new_additionalArguments" value="&quot;&quot;" />
+      <option name="_new_target" value="&quot;concurrent_patterns.TestAsyncConcurrent&quot;" />
+      <option name="_new_targetType" value="&quot;PYTHON&quot;" />
+      <method v="2" />
+    </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Python.run_async_gather" />
+        <item itemvalue="Python 测试.concurrent_patterns.TestAsyncConcurrent 的 Python 测试" />
+        <item itemvalue="Python.run_compare_concurrency" />
         <item itemvalue="Python.run_tests" />
         <item itemvalue="Python.conftest" />
       </list>
@@ -160,8 +276,7 @@
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-js-predefined-d6986cc7102b-9b0f141eb926-JavaScript-PY-253.31033.139" />
-        <option value="bundled-python-sdk-2653e85de345-6d6dccd035ac-com.jetbrains.pycharm.pro.sharedIndexes.bundled-PY-253.31033.139" />
+        <option value="bundled-python-sdk-c59985aa861c-c2ffad84badb-com.jetbrains.pycharm.pro.sharedIndexes.bundled-PY-261.24374.152" />
       </set>
     </attachedChunks>
   </component>

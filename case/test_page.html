@@ -1,0 +1,433 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <title>Web UI Automation Framework Demo Page</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: "Microsoft YaHei", Arial, sans-serif;
+            background: #f5f5f5;
+            color: #333;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 30px 20px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #1890ff;
+            margin-bottom: 30px;
+        }
+
+        .section {
+            background: #fff;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .section h2 {
+            font-size: 18px;
+            color: #333;
+            margin-bottom: 15px;
+            border-bottom: 2px solid #1890ff;
+            padding-bottom: 8px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #555;
+        }
+
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #d9d9d9;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        .form-group input:focus, .form-group select:focus {
+            border-color: #1890ff;
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(24, 144, 255, 0.2);
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 8px 20px;
+            border: none;
+            border-radius: 4px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .btn-primary {
+            background: #1890ff;
+            color: #fff;
+        }
+
+        .btn-primary:hover {
+            background: #40a9ff;
+        }
+
+        .btn-danger {
+            background: #ff4d4f;
+            color: #fff;
+        }
+
+        .btn-success {
+            background: #52c41a;
+            color: #fff;
+        }
+
+        .btn-warning {
+            background: #faad14;
+            color: #fff;
+        }
+
+        .message {
+            margin-top: 10px;
+            padding: 10px;
+            border-radius: 4px;
+            display: none;
+        }
+
+        .message.success {
+            display: block;
+            background: #f6ffed;
+            border: 1px solid #b7eb8f;
+            color: #52c41a;
+        }
+
+        .message.error {
+            display: block;
+            background: #fff2f0;
+            border: 1px solid #ffccc7;
+            color: #ff4d4f;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        table th, table td {
+            border: 1px solid #e8e8e8;
+            padding: 8px 12px;
+            text-align: left;
+        }
+
+        table th {
+            background: #fafafa;
+            font-weight: bold;
+        }
+
+        .dynamic-area {
+            min-height: 60px;
+            padding: 15px;
+            background: #fafafa;
+            border-radius: 4px;
+            margin-top: 10px;
+        }
+
+        .file-upload-area {
+            border: 2px dashed #d9d9d9;
+            padding: 20px;
+            text-align: center;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .file-upload-area:hover {
+            border-color: #1890ff;
+        }
+
+        .checkbox-group label {
+            display: inline-block;
+            margin-right: 15px;
+            font-weight: normal;
+        }
+
+        .footer {
+            text-align: center;
+            color: #999;
+            font-size: 12px;
+            margin-top: 30px;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>Web UI Automation Framework</h1>
+    <p style="text-align:center;color:#888;margin-bottom:30px;">自动化测试演示页面 — 覆盖常见 UI 元素与交互场景</p>
+
+    <!-- 1. 登录表单 -->
+    <div class="section" id="loginSection">
+        <h2>登录表单</h2>
+        <div class="form-group">
+            <label>用户名</label>
+            <input id="username" placeholder="请输入用户名" type="text">
+        </div>
+        <div class="form-group">
+            <label>密码</label>
+            <input id="password" placeholder="请输入密码" type="password">
+        </div>
+        <div class="form-group">
+            <label>验证码</label>
+            <input id="captcha" placeholder="请输入验证码" style="width:150px;" type="text">
+            <span id="captchaDisplay" style="display:inline-block;background:#eee;padding:5px 15px;margin-left:10px;font-style:italic;letter-spacing:3px;">A1B2</span>
+        </div>
+        <div class="form-group checkbox-group">
+            <label><input id="rememberMe" type="checkbox"> 记住我</label>
+            <label><input id="agreeTerms" type="checkbox"> 同意条款</label>
+        </div>
+        <button class="btn btn-primary" id="loginBtn">登录</button>
+        <button class="btn btn-warning" id="resetBtn">重置</button>
+        <div class="message" id="loginMessage"></div>
+    </div>
+
+    <!-- 2. 商品搜索 -->
+    <div class="section">
+        <h2>商品搜索</h2>
+        <div class="form-group">
+            <input id="searchInput" placeholder="搜索商品名称" style="width:300px;display:inline-block;" type="text">
+            <select id="sortSelect" style="width:120px;display:inline-block;margin-left:10px;">
+                <option value="default">默认排序</option>
+                <option value="price_asc">价格从低到高</option>
+                <option value="price_desc">价格从高到低</option>
+                <option value="sales">销量优先</option>
+            </select>
+            <button class="btn btn-primary" id="searchBtn" style="margin-left:10px;">搜索</button>
+        </div>
+        <div class="category-filter" style="margin-bottom:10px;">
+            <button class="btn btn-success" data-cat="手机">手机</button>
+            <button class="btn btn-success" data-cat="电脑">电脑</button>
+            <button class="btn btn-success" data-cat="耳机">耳机</button>
+            <button class="btn btn-success" data-cat="全部">全部</button>
+        </div>
+        <table>
+            <thead>
+            <tr>
+                <th>商品名称</th>
+                <th class="product-price-header">价格</th>
+                <th>操作</th>
+            </tr>
+            </thead>
+            <tbody id="productTable">
+            <tr class="product-item">
+                <td class="product-name">iPhone 15 Pro</td>
+                <td class="product-price">¥8,999</td>
+                <td>
+                    <button class="add-to-cart btn btn-primary btn-sm">加入购物车</button>
+                </td>
+            </tr>
+            <tr class="product-item">
+                <td class="product-name">MacBook Air M3</td>
+                <td class="product-price">¥9,499</td>
+                <td>
+                    <button class="add-to-cart btn btn-primary btn-sm">加入购物车</button>
+                </td>
+            </tr>
+            <tr class="product-item">
+                <td class="product-name">AirPods Pro 2</td>
+                <td class="product-price">¥1,899</td>
+                <td>
+                    <button class="add-to-cart btn btn-primary btn-sm">加入购物车</button>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+        <div style="margin-top:10px;">购物车数量: <span class="cart-badge" id="cartBadge">0</span></div>
+    </div>
+
+    <!-- 3. 弹窗交互 -->
+    <div class="section">
+        <h2>弹窗交互</h2>
+        <button class="btn btn-primary" onclick="alert('这是一个 Alert 弹窗')">显示 Alert</button>
+        <button class="btn btn-warning" onclick="showConfirm()">显示 Confirm</button>
+        <button class="btn btn-danger" onclick="showPrompt()">显示 Prompt</button>
+        <div class="dynamic-area" id="dialogResult">弹窗结果将显示在此处</div>
+    </div>
+
+    <!-- 4. 动态元素 -->
+    <div class="section">
+        <h2>动态元素</h2>
+        <button class="btn btn-primary" id="loadDynamicBtn" onclick="loadDynamicContent()">加载动态内容</button>
+        <div class="dynamic-area" id="dynamicContent">点击按钮加载动态内容...</div>
+    </div>
+
+    <!-- 5. 文件上传 -->
+    <div class="section">
+        <h2>文件上传</h2>
+        <div class="file-upload-area" onclick="document.getElementById('fileInput').click()">
+            <p>点击此处选择文件上传</p>
+            <input id="fileInput" multiple onchange="handleFileUpload(event)" style="display:none;" type="file">
+        </div>
+        <div class="dynamic-area" id="fileList">尚未选择文件</div>
+    </div>
+
+    <!-- 6. 数据表格 -->
+    <div class="section">
+        <h2>数据表格</h2>
+        <table>
+            <thead>
+            <tr>
+                <th>订单编号</th>
+                <th>客户</th>
+                <th>金额</th>
+                <th>状态</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>ORD20240001</td>
+                <td>张三</td>
+                <td>¥299.00</td>
+                <td style="color:#52c41a;">已完成</td>
+            </tr>
+            <tr>
+                <td>ORD20240002</td>
+                <td>李四</td>
+                <td>¥1,599.00</td>
+                <td style="color:#faad14;">处理中</td>
+            </tr>
+            <tr>
+                <td>ORD20240003</td>
+                <td>王五</td>
+                <td>¥89.00</td>
+                <td style="color:#ff4d4f;">已取消</td>
+            </tr>
+            <tr>
+                <td>ORD20240004</td>
+                <td>赵六</td>
+                <td>¥4,299.00</td>
+                <td style="color:#52c41a;">已完成</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+        <p>Web UI Automation Framework Demo Page | 仅供自动化测试学习使用</p>
+    </div>
+</div>
+
+<script>
+    // 登录功能
+    document.getElementById('loginBtn').addEventListener('click', function () {
+        var username = document.getElementById('username').value;
+        var password = document.getElementById('password').value;
+        var msg = document.getElementById('loginMessage');
+        if (!username || !password) {
+            msg.className = 'message error';
+            msg.textContent = '请输入用户名和密码';
+        } else if (username === 'admin' && password === 'admin123') {
+            msg.className = 'message success';
+            msg.textContent = '欢迎回来，管理员！';
+            document.querySelector('.welcome-text') || (function () {
+                var el = document.createElement('div');
+                el.className = 'welcome-text';
+                el.textContent = '欢迎回来';
+                el.style.cssText = 'color:#52c41a;font-size:18px;margin-top:10px;';
+                document.getElementById('loginSection').appendChild(el);
+            })();
+        } else {
+            msg.className = 'message error';
+            msg.textContent = '用户名或密码错误';
+        }
+    });
+
+    document.getElementById('resetBtn').addEventListener('click', function () {
+        document.getElementById('username').value = '';
+        document.getElementById('password').value = '';
+        document.getElementById('captcha').value = '';
+        document.getElementById('loginMessage').className = 'message';
+        var wt = document.querySelector('.welcome-text');
+        if (wt) wt.remove();
+    });
+
+    // Confirm 弹窗
+    function showConfirm() {
+        var result = confirm('确认要执行此操作吗？');
+        document.getElementById('dialogResult').textContent = 'Confirm 结果: ' + (result ? '确认' : '取消');
+    }
+
+    // Prompt 弹窗
+    function showPrompt() {
+        var result = prompt('请输入您的意见：', '默认意见');
+        document.getElementById('dialogResult').textContent = 'Prompt 结果: ' + (result !== null ? result : '用户取消');
+    }
+
+    // 动态内容加载
+    function loadDynamicContent() {
+        document.getElementById('dynamicContent').innerHTML = '<p style="color:#1890ff;">正在加载中...</p>';
+        setTimeout(function () {
+            document.getElementById('dynamicContent').innerHTML = '<p>✅ 动态内容加载完成！当前时间: ' + new Date().toLocaleString() + '</p>';
+        }, 2000);
+    }
+
+    // 文件上传
+    function handleFileUpload(event) {
+        var files = event.target.files;
+        var list = document.getElementById('fileList');
+        if (files.length > 0) {
+            var names = Array.from(files).map(f => f.name).join(', ');
+            list.innerHTML = '<p>已选择文件: ' + names + '</p>';
+        } else {
+            list.innerHTML = '<p>尚未选择文件</p>';
+        }
+    }
+
+    // 搜索功能（模拟）
+    document.getElementById('searchBtn').addEventListener('click', function () {
+        var keyword = document.getElementById('searchInput').value;
+        alert('搜索关键词: ' + (keyword || '全部'));
+    });
+
+    // 加入购物车
+    document.querySelectorAll('.add-to-cart').forEach(function (btn, index) {
+        btn.addEventListener('click', function () {
+            var badge = document.getElementById('cartBadge');
+            var count = parseInt(badge.textContent) || 0;
+            badge.textContent = count + 1;
+            var name = this.closest('tr').querySelector('.product-name').textContent;
+            alert('已加入购物车: ' + name);
+        });
+    });
+
+    // 分类筛选
+    document.querySelectorAll('[data-cat]').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+            var cat = this.getAttribute('data-cat');
+            document.querySelectorAll('.product-item').forEach(function (row) {
+                var name = row.querySelector('.product-name').textContent;
+                if (cat === '全部' || name.includes(cat)) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        });
+    });
+</script>
+</body>
+</html>

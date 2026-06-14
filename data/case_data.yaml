@@ -1,0 +1,22 @@
+# ============================================================
+# 业务测试数据
+# ============================================================
+
+login:
+  success:
+    expected_url: "/home"
+    welcome_text: "欢迎回来"
+  fail:
+    wrong_password:
+      expected_error: "用户名或密码错误"
+    empty_username:
+      expected_error: "请输入用户名"
+    empty_password:
+      expected_error: "请输入密码"
+
+product:
+  search_keywords: [ "手机", "电脑", "耳机" ]
+  sort_options:
+    - "price_asc"
+    - "price_desc"
+    - "sales"

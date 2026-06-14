@@ -1,0 +1,19 @@
+# ============================================================
+# 环境基础配置
+# ============================================================
+
+dev:
+  base_url: "https://dev.example.com"
+  description: "开发环境"
+
+test:
+  base_url: "https://test.example.com"
+  description: "测试环境"
+
+pre:
+  base_url: "https://pre.example.com"
+  description: "预发布环境"
+
+prod:
+  base_url: "https://example.com"
+  description: "生产环境"
